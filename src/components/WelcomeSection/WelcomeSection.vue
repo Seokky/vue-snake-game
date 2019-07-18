@@ -17,7 +17,7 @@ import WelcomeLogo from './WelcomeLogo.vue';
 import StartGameButton from '@/components/common/StartGameButton.vue';
 
 export default {
-  name: 'HelloWorld',
+  name: 'WelcomeSection',
   components: {
     WelcomeLogo,
     StartGameButton,
