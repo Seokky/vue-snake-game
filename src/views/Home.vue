@@ -4,6 +4,7 @@
 </template>
 
 <script>
+/* child components */
 import WelcomeSection from '@/components/WelcomeSection/WelcomeSection.vue';
 
 export default {

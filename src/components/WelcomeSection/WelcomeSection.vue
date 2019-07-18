@@ -1,21 +1,35 @@
 <template lang="pug">
   section.welcome
     welcome-logo
+
     h1.welcomeTitle Vue-snake-game
+
+    start-game-button(
+      @click="redirectToGame"
+    )
 </template>
 
 <script>
+/* child components */
 import WelcomeLogo from './WelcomeLogo.vue';
+
+/* common components */
+import StartGameButton from '@/components/common/StartGameButton.vue';
 
 export default {
   name: 'HelloWorld',
   components: {
     WelcomeLogo,
+    StartGameButton,
+  },
+  methods: {
+    redirectToGame() {
+      this.$router.push({ name: 'game' });
+    },
   },
 };
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="scss">
 @import '@/styles/colors.scss';
 
@@ -27,6 +41,8 @@ export default {
     font-size: 5rem;
     font-weight: bold;
     text-transform: uppercase;
+    margin-top: 80px;
+    margin-bottom: 60px;
   }
 }
 </style>
