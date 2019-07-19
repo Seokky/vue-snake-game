@@ -1,5 +1,11 @@
 <template lang="pug">
   section#gameAreaWrapper
+    game-info(
+      :is-running="snake.isRunning"
+      :score="score"
+      :speed="snake.speedGradeNumber"
+      :max-speed="maxSpeedIsAchieved"
+    )
 </template>
 
 <script>
@@ -7,12 +13,18 @@
 import snakeMixin from '@/mixins/snakeMixin';
 import meatMixin from '@/mixins/meatMixin';
 
-/* eslint-disable consistent-return */
+/* child components */
+import GameInfo from '@/components/Game/GameInfo.vue';
+
+/* eslint-disable consistent-return, func-names */
 export default {
   mixins: [
     snakeMixin,
     meatMixin,
   ],
+  components: {
+    GameInfo,
+  },
   data() {
     return {
       area: {
@@ -23,6 +35,21 @@ export default {
         },
       },
       interval: null,
+      score: {
+        reached: 0,
+        cost: 5,
+        nextBreakpoint: 0,
+        breakpoints: [
+          { boundary: 15, passed: false },
+          { boundary: 30, passed: false },
+          { boundary: 50, passed: false },
+          { boundary: 70, passed: false },
+          { boundary: 100, passed: false },
+          { boundary: 135, passed: false },
+          { boundary: 165, passed: false },
+          { boundary: 200, passed: false },
+        ],
+      },
     };
   },
   computed: {
@@ -33,8 +60,13 @@ export default {
       return this.area.element.clientWidth;
     },
     fieldSize() {
-      const fieldHeight = 30;
-      const fieldWidth = 30;
+      let fieldHeight = 30;
+      let fieldWidth = 30;
+
+      if (this.clientWidth < 1000 || this.clientHeight < 500) {
+        fieldHeight = 20;
+        fieldWidth = 20;
+      }
 
       return {
         height: `${fieldHeight}px`,
@@ -42,6 +74,14 @@ export default {
         poorHeight: fieldHeight,
         poorWidth: fieldWidth,
       };
+    },
+    maxSpeedIsAchieved() {
+      return this.score.reached >= this.score.breakpoints[this.score.breakpoints.length - 1].boundary;
+    },
+  },
+  watch: {
+    'score.reached': function (reachedScore) {
+      this.gradeSpeedIfBoundaryAchieved(reachedScore);
     },
   },
   mounted() {
@@ -110,14 +150,17 @@ export default {
 </script>
 
 <style lang="scss">
+@import '@/styles/sizes.scss';
+
 #gameAreaWrapper {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
   align-items: center;
   width: 100%;
-  height: 100%;
+  height: calc(100% - #{$scoreBoardHeight});
   overflow: hidden;
+  margin-top: $scoreBoardHeight;
   .areaField {
     display: block;
     box-shadow: inset 0px 0px 2px rgba(0,0,0,.3);

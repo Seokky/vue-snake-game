@@ -7,6 +7,8 @@ export default {
         size: 1,
         color: 'coral',
         speed: 150,
+        speedGradeNumber: 1,
+        speedGradeValue: 15,
         direction: 'right',
         head: {
           x: 5,
@@ -45,6 +47,8 @@ export default {
       }
 
       if (this.isSnakeOnMeat()) {
+        this.score.reached += this.score.cost;
+
         field.classList.remove('meatField');
         this.drawMeatField();
       }
@@ -87,6 +91,28 @@ export default {
             break;
         }
       }, this.snake.speed);
+    },
+    gradeSpeedIfBoundaryAchieved(reachedScore) {
+      const { nextBreakpoint } = this.score;
+
+      /* if reached score achieved the boundary of the next breakpoint */
+      if (reachedScore >= this.score.breakpoints[nextBreakpoint].boundary) {
+        /* if that breakpoint don't passed yet */
+        if (!this.score.breakpoints[nextBreakpoint].passed) {
+          /* grade speed and turn breakpoint to passed */
+          this.snake.speed -= this.snake.speedGradeValue;
+          this.snake.speedGradeNumber += 1;
+          this.score.breakpoints[nextBreakpoint].passed = true;
+
+          /* if it's not last breakpoint */
+          if (nextBreakpoint < (this.score.breakpoints.length - 1)) {
+            this.score.nextBreakpoint += 1;
+          }
+        }
+      }
+
+      clearInterval(this.interval);
+      this.snakeMovingLoop();
     },
     changeSnakeDirection(direction) {
       if (!this.snake.isRunning) return false;
