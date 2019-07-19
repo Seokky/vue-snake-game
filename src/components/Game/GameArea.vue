@@ -1,6 +1,6 @@
 <template lang="pug">
   section#gameAreaWrapper
-    game-info(
+    game-info-panel(
       :is-running="snake.isRunning"
       :score="score"
       :speed="snake.speedGradeNumber"
@@ -14,7 +14,7 @@ import snakeMixin from '@/mixins/snakeMixin';
 import meatMixin from '@/mixins/meatMixin';
 
 /* child components */
-import GameInfo from '@/components/Game/GameInfo.vue';
+import GameInfoPanel from '@/components/Game/GameInfoPanel.vue';
 
 /* eslint-disable consistent-return, func-names */
 export default {
@@ -23,7 +23,7 @@ export default {
     meatMixin,
   ],
   components: {
-    GameInfo,
+    GameInfoPanel,
   },
   data() {
     return {
@@ -87,7 +87,7 @@ export default {
   mounted() {
     this.prepareForGame();
 
-    document.addEventListener('keyup', () => { this.onKeyUp(event); });
+    document.addEventListener('keydown', () => { this.onKeyDown(event); });
   },
   methods: {
     calculateAreaSize() {
@@ -120,7 +120,7 @@ export default {
     setGameAreaElement() {
       this.area.element = document.getElementById('gameAreaWrapper');
     },
-    onKeyUp(event) {
+    onKeyDown(event) {
       const codes = ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Space'];
 
       if (!codes.includes(event.code)) return false;
@@ -145,6 +145,16 @@ export default {
           break;
       }
     },
+    stopTheGame() {
+      this.snake.isRunning = !false;
+      clearInterval(this.interval);
+
+      if (window.confirm('The snake bit itself. Try again?')) {
+        location.reload();
+      } else {
+        this.$router.back();
+      }
+    },
   },
 };
 </script>
@@ -163,12 +173,19 @@ export default {
   margin-top: $scoreBoardHeight;
   .areaField {
     display: block;
-    box-shadow: inset 0px 0px 2px rgba(0,0,0,.3);
+    border-radius: 5px;
   }
   .meatField {
     display: block;
     border-radius: 100px;
-    box-shadow: none;
+    box-shadow: 0px 1px 4px rgba(0,0,0,.7);
+    background-color: white;
+  }
+  .snakePart {
+    background-color: coral;
+  }
+  .snakeHead {
+    background-color: yellow;
   }
 }
 </style>
