@@ -150,7 +150,7 @@ export default {
       clearInterval(this.interval);
 
       if (window.confirm('The snake bit itself. Try again?')) {
-        location.reload();
+        this.$router.back();
       } else {
         this.$router.back();
       }
