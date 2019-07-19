@@ -18,8 +18,8 @@ export default {
       area: {
         element: null,
         size: {
-          x: 30,
-          y: 30,
+          x: null,
+          y: null,
         },
       },
       interval: null,
@@ -33,31 +33,39 @@ export default {
       return this.area.element.clientWidth;
     },
     fieldSize() {
-      const fieldHeight = ((this.clientHeight - 30) / 30).toFixed(2);
-      const fieldWidth = ((this.clientWidth) / 30).toFixed(2);
+      const fieldHeight = 30;
+      const fieldWidth = 30;
 
       return {
         height: `${fieldHeight}px`,
         width: `${fieldWidth}px`,
+        poorHeight: fieldHeight,
+        poorWidth: fieldWidth,
       };
     },
   },
   mounted() {
-    this.getGameAreaElement();
-    this.createGameArea();
-    this.drawSnake();
+    this.prepareForGame();
 
     document.addEventListener('keyup', () => { this.onKeyUp(event); });
-
-    this.drawMeatField();
   },
   methods: {
-    createGameArea() {
+    calculateAreaSize() {
+      this.area.size.x = Math.floor(this.clientWidth / this.fieldSize.poorHeight);
+      this.area.size.y = Math.floor(this.clientHeight / this.fieldSize.poorHeight);
+    },
+    prepareForGame() {
+      this.setGameAreaElement();
+      this.calculateAreaSize();
+
       for (let y = 1; y <= this.area.size.y; y++) {
         for (let x = 1; x <= this.area.size.x; x++) {
           this.createGameAreaField(x, y, this.area.element);
         }
       }
+
+      this.drawSnake();
+      this.drawMeatField();
     },
     createGameAreaField(x, y, area) {
       const field = document.createElement('div');
@@ -69,7 +77,7 @@ export default {
 
       area.appendChild(field);
     },
-    getGameAreaElement() {
+    setGameAreaElement() {
       this.area.element = document.getElementById('gameAreaWrapper');
     },
     onKeyUp(event) {
