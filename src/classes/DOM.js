@@ -14,9 +14,9 @@ class DOM {
     return field;
   }
 
-  static fieldIsEmpty(x, y, snake) {
-    for (let i = 0; i < snake.parts.length; i++) {
-      if ((snake.parts[i].x === x) && (snake.parts[i].y === y)) {
+  static fieldIsEmpty(x, y, parts) {
+    for (let i = 0; i < parts.length; i++) {
+      if ((parts[i].x === x) && (parts[i].y === y)) {
         return false;
       }
     }

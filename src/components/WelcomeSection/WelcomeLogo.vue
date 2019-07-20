@@ -35,13 +35,13 @@ $snakeHeadColor: yellow;
       box-shadow: 0px 1px 2px rgba(0,0,0,.7);
     }
     tr.row1 {
-      @for $col from 1 through 8 {
+      @for $col from 1 through 7 {
         td.col#{$col} {
           background: $snakeBodyColor;
         }
-        td.col8 {
-          background: $snakeHeadColor;
-        }
+      }
+      td.col8 {
+        background: $snakeHeadColor;
       }
     }
     tr.row2 {

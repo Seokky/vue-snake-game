@@ -107,7 +107,7 @@ export default {
       }
 
       this.drawSnake();
-      this.drawMeatField();
+      this.drawNewMeatField();
     },
     onKeyDown(event) {
       const codes = ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Space'];

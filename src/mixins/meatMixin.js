@@ -6,13 +6,6 @@ export default {
   data() {
     return {
       meat: {
-        colors: [
-          'yellow',
-          'white',
-          'brown',
-          'purple',
-        ],
-        color: null,
         coords: {
           x: null,
           y: null,
@@ -21,19 +14,24 @@ export default {
     };
   },
   methods: {
-    drawMeatField() {
-      this.meat.color = this.meat.colors[Random.getRandomNumber(0, this.meat.colors.length - 1)];
-
+    drawNewMeatField() {
       do {
         this.meat.coords.x = Random.getRandomNumber(1, this.area.size.x);
         this.meat.coords.y = Random.getRandomNumber(1, this.area.size.y);
-      } while (!DOM.fieldIsEmpty(this.meat.coords.x, this.meat.coords.y, this.snake));
+      } while (!DOM.fieldIsEmpty(this.meat.coords.x, this.meat.coords.y, this.snake.parts));
 
       const field = DOM.getFieldByCoords(this.meat.coords.x, this.meat.coords.y);
       field.classList.add('areaField', 'meatField');
     },
     isSnakeOnMeat() {
-      return ((this.snake.parts[0].x === this.meat.coords.x) && (this.snake.parts[0].y === this.meat.coords.y));
+      const xIsEquals = this.snake.parts[0].x === this.meat.coords.x;
+      const yIsEquals = this.snake.parts[0].y === this.meat.coords.y;
+
+      return xIsEquals && yIsEquals;
+    },
+    removeMeatFromField() {
+      const snakeHead = this.getSnakeHeadField();
+      snakeHead.classList.remove('meatField');
     },
   },
 };

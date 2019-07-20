@@ -44,6 +44,18 @@ export default {
 @import '@/styles/colors.scss';
 @import '@/styles/sizes.scss';
 
+@keyframes scalePlayHint {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.3);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
 .gameInfoWrapper {
   position: fixed;
   top: 10px;
@@ -67,6 +79,11 @@ export default {
     display: flex;
     flex-wrap: nowrap;
     align-items: center;
+    &:nth-of-type(2) {
+      animation-name: scalePlayHint;
+      animation-duration: 1.5s;
+      animation-timing-function: ease-in;
+    }
   }
   .label, .value {
     display: inline-block;
