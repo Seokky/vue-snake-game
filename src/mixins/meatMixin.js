@@ -1,4 +1,5 @@
 /* classes */
+import DOM from '@/classes/DOM';
 import Random from '@/classes/Random';
 
 export default {
@@ -26,18 +27,10 @@ export default {
       do {
         this.meat.coords.x = Random.getRandomNumber(1, this.area.size.x);
         this.meat.coords.y = Random.getRandomNumber(1, this.area.size.y);
-      } while (!this.fieldIsEmpty(this.meat.coords.x, this.meat.coords.y));
+      } while (!DOM.fieldIsEmpty(this.meat.coords.x, this.meat.coords.y, this.snake));
 
-      const field = document.getElementById(`${this.meat.coords.x}:${this.meat.coords.y}`);
+      const field = DOM.getFieldByCoords(this.meat.coords.x, this.meat.coords.y);
       field.classList.add('areaField', 'meatField');
-    },
-    fieldIsEmpty(x, y) {
-      for (let i = 0; i < this.snake.parts.length; i++) {
-        if ((this.snake.parts[i].x === x) && (this.snake.parts[i].y === y)) {
-          return false;
-        }
-      }
-      return true;
     },
     isSnakeOnMeat() {
       return ((this.snake.parts[0].x === this.meat.coords.x) && (this.snake.parts[0].y === this.meat.coords.y));

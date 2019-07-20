@@ -13,6 +13,10 @@
 import snakeMixin from '@/mixins/snakeMixin';
 import meatMixin from '@/mixins/meatMixin';
 
+/* classes */
+import DOM from '@/classes/DOM';
+import SizeCalculator from '@/classes/SizeCalculator';
+
 /* child components */
 import GameInfoPanel from '@/components/Game/GameInfoPanel.vue';
 
@@ -50,31 +54,13 @@ export default {
           { boundary: 200, passed: false },
         ],
       },
+      clientSizes: {
+        height: null,
+        width: null,
+      },
     };
   },
   computed: {
-    clientHeight() {
-      return this.area.element.clientHeight;
-    },
-    clientWidth() {
-      return this.area.element.clientWidth;
-    },
-    fieldSize() {
-      let fieldHeight = 30;
-      let fieldWidth = 30;
-
-      if (this.clientWidth < 1000 || this.clientHeight < 500) {
-        fieldHeight = 20;
-        fieldWidth = 20;
-      }
-
-      return {
-        height: `${fieldHeight}px`,
-        width: `${fieldWidth}px`,
-        poorHeight: fieldHeight,
-        poorWidth: fieldWidth,
-      };
-    },
     maxSpeedIsAchieved() {
       return this.score.reached >= this.score.breakpoints[this.score.breakpoints.length - 1].boundary;
     },
@@ -90,35 +76,38 @@ export default {
     document.addEventListener('keydown', () => { this.onKeyDown(event); });
   },
   methods: {
-    calculateAreaSize() {
-      this.area.size.x = Math.floor(this.clientWidth / this.fieldSize.poorHeight);
-      this.area.size.y = Math.floor(this.clientHeight / this.fieldSize.poorHeight);
+    setAreaElement() {
+      this.area.element = DOM.getGameAreaElement();
+    },
+    setClientSizes() {
+      this.clientSizes = SizeCalculator.getClientSizes(this.area.element);
+    },
+    setAreaSizes() {
+      const areaSize = SizeCalculator.calculateAreaSize(
+        this.clientSizes.width,
+        this.clientSizes.height,
+      );
+      this.area.size.x = areaSize.x;
+      this.area.size.y = areaSize.y;
     },
     prepareForGame() {
-      this.setGameAreaElement();
-      this.calculateAreaSize();
+      this.setAreaElement();
+      this.setClientSizes();
+      this.setAreaSizes();
 
+      const fieldSizes = SizeCalculator.fieldSize(
+        this.clientSizes.width,
+        this.clientSizes.height,
+      );
       for (let y = 1; y <= this.area.size.y; y++) {
         for (let x = 1; x <= this.area.size.x; x++) {
-          this.createGameAreaField(x, y, this.area.element);
+          const field = DOM.createGameAreaField(x, y, fieldSizes.width, fieldSizes.height);
+          this.area.element.appendChild(field);
         }
       }
 
       this.drawSnake();
       this.drawMeatField();
-    },
-    createGameAreaField(x, y, area) {
-      const field = document.createElement('div');
-
-      field.classList.add('areaField');
-      field.setAttribute('id', `${x}:${y}`);
-      field.style.width = this.fieldSize.width;
-      field.style.height = this.fieldSize.height;
-
-      area.appendChild(field);
-    },
-    setGameAreaElement() {
-      this.area.element = document.getElementById('gameAreaWrapper');
     },
     onKeyDown(event) {
       const codes = ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Space'];
@@ -127,7 +116,7 @@ export default {
 
       switch (event.code) {
         case 'Space':
-          this.toggleSnakeRunning();
+          this.playPauseGame();
           break;
         case 'ArrowUp':
           this.changeSnakeDirection('up');

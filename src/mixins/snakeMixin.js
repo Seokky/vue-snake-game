@@ -5,18 +5,11 @@ export default {
       changingDirectionALlowed: true,
       snake: {
         isRunning: false,
-        size: 1,
-        color: 'coral',
         speed: 150,
         speedGradeNumber: 1,
         speedGradeValue: 15,
         direction: 'right',
-        parts: [
-          {
-            x: 5,
-            y: 5,
-          },
-        ],
+        parts: [{ x: 5, y: 5 }],
       },
     };
   },
@@ -25,9 +18,9 @@ export default {
     player can quickly press different arrow buttons and each of them
     will change the snake direction. The problem is conditions of
     changeSnakeDirection() function, that will correctly change the direction
-    (from their point of view), but tick of loopSnakeMoving() function is
+    (from their point of view), but tick of startGameLoop() function is
     too rarely coming, so it will be process only the last imposed direction
-    that can be opposite for last direction approved by loopSnakeMoving() function */
+    that can be opposite for last direction approved by startGameLoop() function */
     changingDirectionALlowed(val) {
       if (!val) {
         this.$nextTick(() => {
@@ -172,14 +165,14 @@ export default {
     getSnakeHeadField() {
       return document.getElementById(`${this.snake.parts[0].x}:${this.snake.parts[0].y}`);
     },
-    toggleSnakeRunning() {
+    playPauseGame() {
       this.snake.isRunning = !this.snake.isRunning;
       if (!this.snake.isRunning) {
         clearInterval(this.interval);
       }
-      this.loopSnakeMoving();
+      this.startGameLoop();
     },
-    loopSnakeMoving() {
+    startGameLoop() {
       if (!this.snake.isRunning) return false;
 
       this.interval = setInterval(() => {
@@ -221,7 +214,7 @@ export default {
       }
 
       clearInterval(this.interval);
-      this.loopSnakeMoving();
+      this.startGameLoop();
     },
     changeSnakeDirection(direction) {
       if (!this.snake.isRunning || !this.changingDirectionALlowed) return false;
