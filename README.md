@@ -6,8 +6,7 @@ Snake game on Vue.js without canvas
 [Play online on GitHub pages](https://seokky.github.io/vue-snake-game/)
 
 ## ToDo
-- refactoring
-- tests
+- Add tests
 
 ## Project setup
 ```
