@@ -1,12 +1,9 @@
 # vue-snake-game
 Snake game on Vue.js without canvas
 
-![](https://repository-images.githubusercontent.com/197570931/7cb4e100-aaa7-11e9-858a-efff5d85def2)
+[Click here to play online on GitHub pages](https://seokky.github.io/vue-snake-game/)
 
-[Play online on GitHub pages](https://seokky.github.io/vue-snake-game/)
-
-## ToDo
-- Add tests
+[](https://repository-images.githubusercontent.com/197570931/7cb4e100-aaa7-11e9-858a-efff5d85def2)
 
 ## Project setup
 ```
