@@ -33,20 +33,16 @@ export default {
     return {
       area: {
         element: null,
-        size: {
-          x: null,
-          y: null,
-        },
+        size: { x: null, y: null },
       },
-      interval: null,
       score: {
         reached: 0,
         cost: 5,
         nextBreakpoint: 0,
         breakpoints: [
+          { boundary: 5, passed: false },
+          { boundary: 10, passed: false },
           { boundary: 15, passed: false },
-          { boundary: 30, passed: false },
-          { boundary: 50, passed: false },
           { boundary: 70, passed: false },
           { boundary: 100, passed: false },
           { boundary: 135, passed: false },
@@ -54,15 +50,15 @@ export default {
           { boundary: 200, passed: false },
         ],
       },
-      clientSizes: {
-        height: null,
-        width: null,
-      },
+      interval: null,
+      clientSizes: { height: null, width: null },
     };
   },
   computed: {
     maxSpeedIsAchieved() {
-      return this.score.reached >= this.score.breakpoints[this.score.breakpoints.length - 1].boundary;
+      const lastBreakpoint = this.score.breakpoints[this.score.breakpoints.length - 1];
+
+      return this.score.reached >= lastBreakpoint.boundary;
     },
   },
   watch: {
@@ -76,20 +72,6 @@ export default {
     document.addEventListener('keydown', () => { this.onKeyDown(event); });
   },
   methods: {
-    setAreaElement() {
-      this.area.element = DOM.getGameAreaElement();
-    },
-    setClientSizes() {
-      this.clientSizes = SizeCalculator.getClientSizes(this.area.element);
-    },
-    setAreaSizes() {
-      const areaSize = SizeCalculator.calculateAreaSize(
-        this.clientSizes.width,
-        this.clientSizes.height,
-      );
-      this.area.size.x = areaSize.x;
-      this.area.size.y = areaSize.y;
-    },
     prepareForGame() {
       this.setAreaElement();
       this.setClientSizes();
@@ -99,6 +81,7 @@ export default {
         this.clientSizes.width,
         this.clientSizes.height,
       );
+
       for (let y = 1; y <= this.area.size.y; y++) {
         for (let x = 1; x <= this.area.size.x; x++) {
           const field = DOM.createGameAreaField(x, y, fieldSizes.width, fieldSizes.height);
@@ -115,9 +98,6 @@ export default {
       if (!codes.includes(event.code)) return false;
 
       switch (event.code) {
-        case 'Space':
-          this.playPauseGame();
-          break;
         case 'ArrowUp':
           this.changeSnakeDirection('up');
           break;
@@ -129,6 +109,9 @@ export default {
           break;
         case 'ArrowRight':
           this.changeSnakeDirection('right');
+          break;
+        case 'Space':
+          this.playPauseGame();
           break;
         default:
           break;
@@ -143,6 +126,20 @@ export default {
       } else {
         this.$router.back();
       }
+    },
+    setAreaElement() {
+      this.area.element = DOM.getGameAreaElement();
+    },
+    setClientSizes() {
+      this.clientSizes = SizeCalculator.getClientSizes(this.area.element);
+    },
+    setAreaSizes() {
+      const areaSize = SizeCalculator.calculateAreaSize(
+        this.clientSizes.width,
+        this.clientSizes.height,
+      );
+      this.area.size.x = areaSize.x;
+      this.area.size.y = areaSize.y;
     },
   },
 };

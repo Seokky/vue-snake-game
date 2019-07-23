@@ -1,6 +1,6 @@
 /* classes */
 import DOM from '@/classes/DOM';
-import Random from '@/classes/Random';
+import Randomizer from '@/classes/Randomizer';
 
 export default {
   data() {
@@ -16,8 +16,8 @@ export default {
   methods: {
     drawNewMeatField() {
       do {
-        this.meat.coords.x = Random.getRandomNumber(1, this.area.size.x);
-        this.meat.coords.y = Random.getRandomNumber(1, this.area.size.y);
+        this.meat.coords.x = Randomizer.getRandomNumber(1, this.area.size.x);
+        this.meat.coords.y = Randomizer.getRandomNumber(1, this.area.size.y);
       } while (!DOM.fieldIsEmpty(this.meat.coords.x, this.meat.coords.y, this.snake.parts));
 
       const field = DOM.getFieldByCoords(this.meat.coords.x, this.meat.coords.y);

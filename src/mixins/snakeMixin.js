@@ -104,6 +104,7 @@ export default {
         }
       }
 
+      /* restarting game loop */
       clearInterval(this.interval);
       this.startGameLoop();
     },
