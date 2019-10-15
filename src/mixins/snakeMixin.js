@@ -1,3 +1,7 @@
+/* constants */
+import { DEFAULT_SPEED, SPEED_GRADE_VALUE } from '@/constants';
+
+/* utils */
 import { getFieldByCoords } from '@/utils/game-dom';
 
 /* eslint-disable consistent-return */
@@ -6,9 +10,9 @@ export default {
     changingDirectionALlowed: true,
     snake: {
       isRunning: false,
-      speed: 150,
       speedGradeNumber: 1,
-      speedGradeValue: 15,
+      speedGradeValue: SPEED_GRADE_VALUE,
+      speed: DEFAULT_SPEED,
       direction: 'right',
       parts: [{ x: 5, y: 5 }],
     },

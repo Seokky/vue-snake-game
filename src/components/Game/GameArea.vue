@@ -9,6 +9,9 @@
 </template>
 
 <script>
+/* constants */
+import { SCORE_COST } from '@/constants';
+
 /* mixins */
 import snakeMixin from '@/mixins/snakeMixin';
 import meatMixin from '@/mixins/meatMixin';
@@ -43,12 +46,12 @@ export default {
     },
     score: {
       reached: 0,
-      cost: 5,
+      cost: SCORE_COST,
       nextBreakpoint: 0,
       breakpoints: [
-        { boundary: 5, passed: false },
-        { boundary: 10, passed: false },
         { boundary: 15, passed: false },
+        { boundary: 30, passed: false },
+        { boundary: 50, passed: false },
         { boundary: 70, passed: false },
         { boundary: 100, passed: false },
         { boundary: 135, passed: false },
