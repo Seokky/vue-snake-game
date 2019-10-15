@@ -26,34 +26,35 @@ export default {
     snakeMixin,
     meatMixin,
   ],
+
   components: {
     GameInfoPanel,
   },
-  data() {
-    return {
-      area: {
-        element: null,
-        size: { x: null, y: null },
-      },
-      score: {
-        reached: 0,
-        cost: 5,
-        nextBreakpoint: 0,
-        breakpoints: [
-          { boundary: 5, passed: false },
-          { boundary: 10, passed: false },
-          { boundary: 15, passed: false },
-          { boundary: 70, passed: false },
-          { boundary: 100, passed: false },
-          { boundary: 135, passed: false },
-          { boundary: 165, passed: false },
-          { boundary: 200, passed: false },
-        ],
-      },
-      interval: null,
-      clientSizes: { height: null, width: null },
-    };
-  },
+
+  data: () => ({
+    area: {
+      element: null,
+      size: { x: null, y: null },
+    },
+    score: {
+      reached: 0,
+      cost: 5,
+      nextBreakpoint: 0,
+      breakpoints: [
+        { boundary: 5, passed: false },
+        { boundary: 10, passed: false },
+        { boundary: 15, passed: false },
+        { boundary: 70, passed: false },
+        { boundary: 100, passed: false },
+        { boundary: 135, passed: false },
+        { boundary: 165, passed: false },
+        { boundary: 200, passed: false },
+      ],
+    },
+    interval: null,
+    clientSizes: { height: null, width: null },
+  }),
+
   computed: {
     maxSpeedIsAchieved() {
       const lastBreakpoint = this.score.breakpoints[this.score.breakpoints.length - 1];
@@ -61,16 +62,19 @@ export default {
       return this.score.reached >= lastBreakpoint.boundary;
     },
   },
+
   watch: {
     'score.reached': function (reachedScore) {
       this.gradeSpeedIfBoundaryAchieved(reachedScore);
     },
   },
+
   mounted() {
     this.prepareForGame();
 
     document.addEventListener('keydown', () => { this.onKeyDown(event); });
   },
+
   methods: {
     prepareForGame() {
       this.setAreaElement();

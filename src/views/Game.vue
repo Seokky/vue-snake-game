@@ -10,11 +10,6 @@ export default {
   components: {
     GameArea,
   },
-  data() {
-    return {
-
-    };
-  },
 };
 </script>
 

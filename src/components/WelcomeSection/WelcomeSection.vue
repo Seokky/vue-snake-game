@@ -4,9 +4,7 @@
 
     h1.welcomeTitle Vue-snake-game
 
-    start-game-button(
-      @click="redirectToGame"
-    )
+    start-game-button(@click="redirectToGame")
 </template>
 
 <script>
@@ -18,10 +16,12 @@ import StartGameButton from '@/components/common/StartGameButton.vue';
 
 export default {
   name: 'WelcomeSection',
+
   components: {
     WelcomeLogo,
     StartGameButton,
   },
+
   methods: {
     redirectToGame() {
       this.$router.push({ name: 'game' });

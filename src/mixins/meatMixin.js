@@ -3,16 +3,15 @@ import DOM from '@/classes/DOM';
 import Randomizer from '@/classes/Randomizer';
 
 export default {
-  data() {
-    return {
-      meat: {
-        coords: {
-          x: null,
-          y: null,
-        },
+  data: () => ({
+    meat: {
+      coords: {
+        x: null,
+        y: null,
       },
-    };
-  },
+    },
+  }),
+
   methods: {
     drawNewMeatField() {
       do {

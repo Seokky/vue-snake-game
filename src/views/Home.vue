@@ -9,6 +9,7 @@ import WelcomeSection from '@/components/WelcomeSection/WelcomeSection.vue';
 
 export default {
   name: 'home',
+
   components: {
     WelcomeSection,
   },

@@ -1,20 +1,10 @@
-<template lang="pug">
+<template lang="pug" functional>
   section.welcomeLogoWrapper
     table
       tr(v-for="row in 3" :class="`row${row}`")
         td(v-for="col in 8" :class="`col${col}`")
 
 </template>
-
-<script>
-export default {
-  data() {
-    return {
-
-    };
-  },
-};
-</script>
 
 <style lang="scss" scoped>
 @import '@/styles/colors.scss';

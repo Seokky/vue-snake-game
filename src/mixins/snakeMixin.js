@@ -2,19 +2,18 @@ import DOM from '@/classes/DOM';
 
 /* eslint-disable consistent-return */
 export default {
-  data() {
-    return {
-      changingDirectionALlowed: true,
-      snake: {
-        isRunning: false,
-        speed: 150,
-        speedGradeNumber: 1,
-        speedGradeValue: 15,
-        direction: 'right',
-        parts: [{ x: 5, y: 5 }],
-      },
-    };
-  },
+  data: () => ({
+    changingDirectionALlowed: true,
+    snake: {
+      isRunning: false,
+      speed: 150,
+      speedGradeNumber: 1,
+      speedGradeValue: 15,
+      direction: 'right',
+      parts: [{ x: 5, y: 5 }],
+    },
+  }),
+
   watch: {
     /* Make small input processing frequency, because in other case
     player can quickly press different arrow buttons and each of them
@@ -33,6 +32,7 @@ export default {
       }
     },
   },
+
   methods: {
     drawSnake() {
       /* drawing each part of snake */

@@ -14,16 +14,13 @@ export default {
       default: false,
     },
   },
-  data() {
-    return {
 
-    };
-  },
   computed: {
     buttonTextComputed() {
       return (this.repeat) ? 'Try one more!' : 'Start a game!';
     },
   },
+
   methods: {
     onClick() {
       this.$emit('click');

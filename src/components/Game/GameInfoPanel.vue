@@ -1,15 +1,15 @@
-<template lang="pug">
+<template lang="pug" functional>
   section.gameInfoWrapper
     .row
       .col
         .label Score:
-        .value {{ score.reached }}
+        .value {{ props.score.reached }}
       .col
-        .label {{ (isRunning) ? 'Pause:' : 'Play:' }}
+        .label {{ (props.isRunning) ? 'Pause:' : 'Play:' }}
         .value SPACE
       .col
         .label Speed:
-        .value {{ (maxSpeed) ? 'MAX SPEED' : speed }}
+        .value {{ (props.maxSpeed) ? 'MAX SPEED' : props.speed }}
 </template>
 
 <script>
@@ -31,11 +31,6 @@ export default {
       required: true,
       type: Object,
     },
-  },
-  data() {
-    return {
-
-    };
   },
 };
 </script>
