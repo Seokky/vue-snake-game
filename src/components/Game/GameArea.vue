@@ -111,20 +111,16 @@ export default {
 
       switch (event.code) {
         case 'ArrowUp':
-          this.changeSnakeDirection('up');
-          break;
         case 'ArrowDown':
-          this.changeSnakeDirection('down');
-          break;
         case 'ArrowLeft':
-          this.changeSnakeDirection('left');
-          break;
         case 'ArrowRight':
-          this.changeSnakeDirection('right');
+          this.changeSnakeDirection(event.code.slice(5).toLowerCase());
           break;
+
         case 'Space':
           this.playPauseGame();
           break;
+
         default:
           break;
       }

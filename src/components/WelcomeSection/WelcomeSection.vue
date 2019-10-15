@@ -10,8 +10,6 @@
 <script>
 /* child components */
 import WelcomeLogo from './WelcomeLogo.vue';
-
-/* common components */
 import StartGameButton from './StartGameButton.vue';
 
 export default {
