@@ -1,6 +1,6 @@
-/* classes */
-import DOM from '@/classes/DOM';
-import Randomizer from '@/classes/Randomizer';
+/* utils */
+import { fieldIsEmpty, getFieldByCoords } from '@/utils/game-dom';
+import { getRandomNumber } from '@/utils/random';
 
 export default {
   data: () => ({
@@ -15,11 +15,18 @@ export default {
   methods: {
     drawNewMeatField() {
       do {
-        this.meat.coords.x = Randomizer.getRandomNumber(1, this.area.size.x);
-        this.meat.coords.y = Randomizer.getRandomNumber(1, this.area.size.y);
-      } while (!DOM.fieldIsEmpty(this.meat.coords.x, this.meat.coords.y, this.snake.parts));
+        this.meat.coords.x = getRandomNumber(1, this.area.size.x);
+        this.meat.coords.y = getRandomNumber(1, this.area.size.y);
+      } while (
+        !fieldIsEmpty(
+          this.meat.coords.x,
+          this.meat.coords.y,
+          this.snake.parts,
+        )
+      );
 
-      const field = DOM.getFieldByCoords(this.meat.coords.x, this.meat.coords.y);
+      const field = getFieldByCoords(this.meat.coords.x, this.meat.coords.y);
+
       field.classList.add('areaField', 'meatField');
     },
     isSnakeOnMeat() {
@@ -30,6 +37,7 @@ export default {
     },
     removeMeatFromField() {
       const snakeHead = this.getSnakeHeadField();
+
       snakeHead.classList.remove('meatField');
     },
   },

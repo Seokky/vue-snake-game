@@ -13,9 +13,14 @@
 import snakeMixin from '@/mixins/snakeMixin';
 import meatMixin from '@/mixins/meatMixin';
 
-/* classes */
-import DOM from '@/classes/DOM';
-import SizeCalculator from '@/classes/SizeCalculator';
+/* utils */
+import {
+  createGameAreaField,
+  getGameAreaElement,
+  calculateFieldSize,
+  getClientSizes,
+  calculateAreaSize,
+} from '@/utils/game-dom';
 
 /* child components */
 import GameInfoPanel from '@/components/Game/GameInfoPanel.vue';
@@ -81,14 +86,14 @@ export default {
       this.setClientSizes();
       this.setAreaSizes();
 
-      const fieldSizes = SizeCalculator.fieldSize(
+      const fieldSizes = calculateFieldSize(
         this.clientSizes.width,
         this.clientSizes.height,
       );
 
-      for (let y = 1; y <= this.area.size.y; y++) {
-        for (let x = 1; x <= this.area.size.x; x++) {
-          const field = DOM.createGameAreaField(x, y, fieldSizes.width, fieldSizes.height);
+      for (let y = 1; y <= this.area.size.y; y += 1) {
+        for (let x = 1; x <= this.area.size.x; x += 1) {
+          const field = createGameAreaField(x, y, fieldSizes.width, fieldSizes.height);
           this.area.element.appendChild(field);
         }
       }
@@ -132,13 +137,13 @@ export default {
       }
     },
     setAreaElement() {
-      this.area.element = DOM.getGameAreaElement();
+      this.area.element = getGameAreaElement();
     },
     setClientSizes() {
-      this.clientSizes = SizeCalculator.getClientSizes(this.area.element);
+      this.clientSizes = getClientSizes(this.area.element);
     },
     setAreaSizes() {
-      const areaSize = SizeCalculator.calculateAreaSize(
+      const areaSize = calculateAreaSize(
         this.clientSizes.width,
         this.clientSizes.height,
       );

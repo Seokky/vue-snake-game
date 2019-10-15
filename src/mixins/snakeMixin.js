@@ -1,4 +1,4 @@
-import DOM from '@/classes/DOM';
+import { getFieldByCoords } from '@/utils/game-dom';
 
 /* eslint-disable consistent-return */
 export default {
@@ -36,12 +36,11 @@ export default {
   methods: {
     drawSnake() {
       /* drawing each part of snake */
-      for (let i = 0; i < this.snake.parts.length; i++) {
-        const field = this.getSnakeBodyPart(i);
+      for (let i = 0; i < this.snake.parts.length; i += 1) {
         if (i > 0) {
-          field.classList.add('snakePart');
+          this.getSnakeBodyPart(i).classList.add('snakePart');
         } else {
-          field.classList.add('snakeHead');
+          this.getSnakeBodyPart(i).classList.add('snakeHead');
         }
       }
 
@@ -65,17 +64,19 @@ export default {
       return snakeHead.classList.value.includes('snakePart');
     },
     getSnakeBodyPart(n) {
-      return DOM.getFieldByCoords(this.snake.parts[n].x, this.snake.parts[n].y);
+      return getFieldByCoords(this.snake.parts[n].x, this.snake.parts[n].y);
     },
     getSnakeHeadField() {
-      return DOM.getFieldByCoords(this.snake.parts[0].x, this.snake.parts[0].y);
+      return getFieldByCoords(this.snake.parts[0].x, this.snake.parts[0].y);
     },
     playPauseGame() {
       this.snake.isRunning = !this.snake.isRunning;
-      /* stoping the game loop */
+
       if (!this.snake.isRunning) {
+        /* stoping the game loop */
         clearInterval(this.interval);
       }
+
       this.startGameLoop();
     },
     startGameLoop() {
@@ -146,10 +147,11 @@ export default {
     moveSnake() {
       const oldPartsCoords = this.getSnakeCoordsBeforeMoving();
 
-      for (let i = 0; i < this.snake.parts.length; i++) {
+      for (let i = 0; i < this.snake.parts.length; i += 1) {
         /* if it's head, just increment/decrement X or Y depending on moving direction */
         if (i === 0) {
           const oldSnakeHead = this.getSnakeHeadField();
+
           oldSnakeHead.classList.remove('snakeHead');
 
           switch (this.snake.direction) {
@@ -191,7 +193,9 @@ export default {
             the part that going ahead,
           */
           const oldPartPos = this.getSnakeBodyPart(i);
+
           oldPartPos.classList.remove('snakePart');
+
           this.snake.parts[i].x = oldPartsCoords[i - 1].x;
           this.snake.parts[i].y = oldPartsCoords[i - 1].y;
         }

@@ -18,7 +18,7 @@ describe('Game page', () => {
     const startSnakeCoords = '5:5';
     cy.get('#gameAreaWrapper > div')
       .then((el) => {
-        for (let i = 0; i < el.length; i++) {
+        for (let i = 0; i < el.length; i += 1) {
           if (el[i].getAttribute('id') === startSnakeCoords) {
             return el[i];
           }
@@ -33,7 +33,7 @@ describe('Game page', () => {
     cy.visit('/game');
     cy.get('#gameAreaWrapper > div')
       .then((el) => {
-        for (let i = 0; i < el.length; i++) {
+        for (let i = 0; i < el.length; i += 1) {
           if (el[i].getAttribute('class') === 'areaField meatField') {
             return el[i];
           }
