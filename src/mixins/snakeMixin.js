@@ -109,27 +109,22 @@ export default {
       clearInterval(this.interval);
       this.startGameLoop();
     },
-    changeSnakeDirection(direction) {
+    changeSnakeDirection(newDirection) {
+      const currentDirection = this.snake.direction;
+
       if (!this.snake.isRunning || !this.changingDirectionALlowed) return false;
-      if (this.snake.direction === direction) return false;
+      if (currentDirection === newDirection) return false;
 
-      if (direction === 'up' && this.snake.direction === 'down') {
+      if (
+        (newDirection === 'up' && currentDirection === 'down')
+        || (newDirection === 'down' && currentDirection === 'up')
+        || (newDirection === 'left' && currentDirection === 'right')
+        || (newDirection === 'right' && currentDirection === 'left')
+      ) {
         return false;
       }
 
-      if (direction === 'down' && this.snake.direction === 'up') {
-        return false;
-      }
-
-      if (direction === 'left' && this.snake.direction === 'right') {
-        return false;
-      }
-
-      if (direction === 'right' && this.snake.direction === 'left') {
-        return false;
-      }
-
-      this.snake.direction = direction;
+      this.snake.direction = newDirection;
       this.changingDirectionALlowed = false;
     },
     getSnakeCoordsBeforeMoving() {
@@ -162,6 +157,7 @@ export default {
                 this.snake.parts[0].y -= 1;
               }
               break;
+
             case 'down':
               if (this.snake.parts[0].y === this.area.size.y) {
                 this.snake.parts[0].y = 1;
@@ -169,6 +165,7 @@ export default {
                 this.snake.parts[0].y += 1;
               }
               break;
+
             case 'left':
               if (this.snake.parts[0].x === 1) {
                 this.snake.parts[0].x = this.area.size.x;
@@ -176,6 +173,7 @@ export default {
                 this.snake.parts[0].x -= 1;
               }
               break;
+
             case 'right':
               if (this.snake.parts[0].x === this.area.size.x) {
                 this.snake.parts[0].x = 1;
@@ -183,6 +181,7 @@ export default {
                 this.snake.parts[0].x += 1;
               }
               break;
+
             default:
               break;
           }
@@ -204,56 +203,50 @@ export default {
       this.drawSnake();
     },
     addSnakeBodyPart() {
-      const newBodyPartCoords = {
-        x: null,
-        y: null,
-      };
-      const lastPartIndex = this.snake.parts.length - 1;
+      const tailIndex = this.snake.parts.length - 1;
+      let { x, y } = this.snake.parts[tailIndex];
       /*
         determine the coordinates of the new part of the
         body depending on the direction of movement
       */
       switch (this.snake.direction) {
         case 'up':
-          newBodyPartCoords.x = this.snake.parts[lastPartIndex].x;
-          if (this.snake.parts[lastPartIndex].y === 1) {
-            newBodyPartCoords.y = this.area.size.y;
+          if (this.snake.parts[tailIndex].y === 1) {
+            y = this.area.size.y;
           } else {
-            newBodyPartCoords.y = this.snake.parts[lastPartIndex].y - 1;
+            y = this.snake.parts[tailIndex].y - 1;
           }
           break;
+
         case 'down':
-          newBodyPartCoords.x = this.snake.parts[lastPartIndex].x;
-          if (this.snake.parts[lastPartIndex].y === this.area.size.y) {
-            newBodyPartCoords.y = 1;
+          if (this.snake.parts[tailIndex].y === this.area.size.y) {
+            y = 1;
           } else {
-            newBodyPartCoords.y = this.snake.parts[lastPartIndex].y + 1;
+            y = this.snake.parts[tailIndex].y + 1;
           }
           break;
+
         case 'left':
-          if (this.snake.parts[lastPartIndex].x === this.area.size.x) {
-            newBodyPartCoords.x = 1;
+          if (this.snake.parts[tailIndex].x === this.area.size.x) {
+            x = 1;
           } else {
-            newBodyPartCoords.x = this.snake.parts[lastPartIndex].x + 1;
+            x = this.snake.parts[tailIndex].x + 1;
           }
-          newBodyPartCoords.y = this.snake.parts[lastPartIndex].y;
           break;
+
         case 'right':
-          if (this.snake.parts[lastPartIndex].x === 1) {
-            newBodyPartCoords.x = this.area.size.x;
+          if (this.snake.parts[tailIndex].x === 1) {
+            x = this.area.size.x;
           } else {
-            newBodyPartCoords.x = this.snake.parts[lastPartIndex].x - 1;
+            x = this.snake.parts[tailIndex].x - 1;
           }
-          newBodyPartCoords.y = this.snake.parts[lastPartIndex].y;
           break;
+
         default:
           break;
       }
 
-      this.snake.parts.push({
-        x: newBodyPartCoords.x,
-        y: newBodyPartCoords.y,
-      });
+      this.snake.parts.push({ x, y });
     },
   },
 };
