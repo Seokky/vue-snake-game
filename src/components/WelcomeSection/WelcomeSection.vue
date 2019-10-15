@@ -35,9 +35,10 @@ export default {
 
 .welcome {
   padding: 80px 40px;
+
   .welcomeTitle {
     color: white;
-    text-shadow: 0px 1px 4px rgba(0,0,0,.5);
+    text-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
     font-size: 5rem;
     font-weight: bold;
     text-transform: uppercase;

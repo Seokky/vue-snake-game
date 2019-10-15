@@ -157,19 +157,23 @@ export default {
   height: calc(100% - #{$scoreBoardHeight});
   overflow: hidden;
   margin-top: $scoreBoardHeight;
+
   .areaField {
     display: block;
     border-radius: 5px;
   }
+
   .meatField {
     display: block;
     border-radius: 100px;
-    box-shadow: 0px 1px 4px rgba(0,0,0,.7);
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.7);
     background-color: white;
   }
+
   .snakePart {
     background-color: coral;
   }
+
   .snakeHead {
     background-color: yellow;
   }

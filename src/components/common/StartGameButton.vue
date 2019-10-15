@@ -43,18 +43,21 @@ $fontSize: 1.4rem;
   border: none;
   color: white;
   cursor: pointer;
-  box-shadow: 0px 2px 4px rgba(0,0,0,.2);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
   height: 60px;
-  transition: all .5s ease;
+  transition: background-color 0.5s ease;
+
   &:hover {
-    background: $secondColor;
+    background-color: $secondColor;
     border: 6px solid $mainColor;
-    transition: all .2s ease;
+    transition: background-color 0.2s ease;
   }
+
   .btnIcon {
     font-size: $fontSize;
     margin-right: 10px;
   }
+
   .btnText {
     font-size: $fontSize;
     font-family: Monospace;

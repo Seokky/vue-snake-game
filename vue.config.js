@@ -3,5 +3,5 @@ module.exports = {
     ? '/vue-snake-game/'
     : '/',
   outputDir: 'docs',
-  productionSourceMap: false
-}
+  productionSourceMap: false,
+};
