@@ -1,7 +1,7 @@
 <template lang="pug">
   section#gameAreaWrapper
     game-info-panel(
-      :is-running="snake.isRunning"
+      :is-running="isRunning"
       :score="score"
       :speed="snake.speedGradeNumber"
       :max-speed="maxSpeedIsAchieved"
@@ -40,6 +40,7 @@ export default {
   },
 
   data: () => ({
+    isRunning: false,
     area: {
       element: null,
       size: { x: null, y: null },
@@ -72,15 +73,26 @@ export default {
   },
 
   watch: {
-    'score.reached': function (reachedScore) {
+    'score.reached': function(reachedScore) {
       this.gradeSpeedIfBoundaryAchieved(reachedScore);
     },
+    isRunning(value) {
+      if (value) {
+        this.startGameLoop();
+      } else {
+        this.stopGameLoop();
+      }
+    },
+  },
+
+  beforeDestroy() {
+    this.stopGameLoop();
   },
 
   mounted() {
     this.prepareForGame();
 
-    document.addEventListener('keydown', () => { this.onKeyDown(event); });
+    document.addEventListener('keydown', (e) => { this.onKeyDown(e); });
   },
 
   methods: {
@@ -125,15 +137,19 @@ export default {
           break;
       }
     },
-    stopTheGame() {
-      this.snake.isRunning = !false;
+    playPauseGame() {
+      this.isRunning = !this.isRunning;
+    },
+    startGameLoop() {
+      this.interval = setInterval(this.moveSnake, this.snake.speed);
+    },
+    stopGameLoop() {
       clearInterval(this.interval);
-
-      if (window.confirm('The snake bit itself. Try again?')) {
-        this.$router.back();
-      } else {
-        this.$router.back();
-      }
+    },
+    finishTheGame() {
+      this.stopGameLoop();
+      window.confirm('The snake bit itself. Try again?');
+      this.$router.back();
     },
     setAreaElement() {
       this.area.element = getGameAreaElement();

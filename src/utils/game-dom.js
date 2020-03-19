@@ -1,6 +1,6 @@
 const getGameAreaElement = function() {
   return document.getElementById('gameAreaWrapper');
-}
+};
 
 const createGameAreaField = function(x, y, width, height) {
   const field = document.createElement('div');
@@ -11,7 +11,7 @@ const createGameAreaField = function(x, y, width, height) {
   field.style.height = height;
 
   return field;
-}
+};
 
 const fieldIsEmpty = function(x, y, snakeParts) {
   for (let i = 0; i < snakeParts.length; i += 1) {
@@ -20,18 +20,18 @@ const fieldIsEmpty = function(x, y, snakeParts) {
     }
   }
   return true;
-}
+};
 
 const getFieldByCoords = function(x, y) {
   return document.getElementById(`${x}:${y}`);
-}
+};
 
 const getClientSizes = function(el) {
   return {
     height: el.clientHeight,
     width: el.clientWidth,
   };
-}
+};
 
 const calculateFieldSize = function(clientWidth, clientHeight) {
   let fieldHeight = 30;
@@ -48,7 +48,7 @@ const calculateFieldSize = function(clientWidth, clientHeight) {
     pureHeight: fieldHeight,
     pureWidth: fieldWidth,
   };
-}
+};
 
 const calculateAreaSize = function(clientWidth, clientHeight) {
   const fieldSizes = calculateFieldSize(clientWidth, clientHeight);
@@ -56,7 +56,7 @@ const calculateAreaSize = function(clientWidth, clientHeight) {
   const y = Math.floor(clientHeight / fieldSizes.pureHeight);
 
   return { x, y };
-}
+};
 
 export {
   getGameAreaElement,

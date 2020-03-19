@@ -1,33 +1,10 @@
-<template lang="pug">
-  button.startGameBtn(@click="onClick")
+<template functional lang="pug">
+  button.startGameBtn(@click="listeners.click")
     span.btnIcon
       fa-icon(icon="play-circle")
-    span.btnText {{ buttonTextComputed }}
+
+    span.btnText Start a game!
 </template>
-
-<script>
-export default {
-  props: {
-    repeat: {
-      required: false,
-      type: Boolean,
-      default: false,
-    },
-  },
-
-  computed: {
-    buttonTextComputed() {
-      return (this.repeat) ? 'Try one more!' : 'Start a game!';
-    },
-  },
-
-  methods: {
-    onClick() {
-      this.$emit('click');
-    },
-  },
-};
-</script>
 
 <style lang="scss" scoped>
 @import '@/styles/colors.scss';

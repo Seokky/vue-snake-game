@@ -7,9 +7,8 @@ import { getFieldByCoords } from '@/utils/game-dom';
 /* eslint-disable consistent-return */
 export default {
   data: () => ({
-    changingDirectionALlowed: true,
+    changingDirectionAllowed: true,
     snake: {
-      isRunning: false,
       speedGradeNumber: 1,
       speedGradeValue: SPEED_GRADE_VALUE,
       speed: DEFAULT_SPEED,
@@ -26,11 +25,11 @@ export default {
     (from their point of view), but tick of startGameLoop() function is
     too rarely coming, so it will be process only the last imposed direction
     that can be opposite for last direction approved by startGameLoop() function */
-    changingDirectionALlowed(val) {
+    changingDirectionAllowed(val) {
       if (!val) {
         this.$nextTick(() => {
           setTimeout(() => {
-            this.changingDirectionALlowed = true;
+            this.changingDirectionAllowed = true;
           }, this.snake.speed);
         });
       }
@@ -56,7 +55,7 @@ export default {
       }
 
       if (this.isSnakeOnItself()) {
-        this.stopTheGame();
+        this.finishTheGame();
       }
     },
     increasePlayerScore() {
@@ -72,23 +71,6 @@ export default {
     },
     getSnakeHeadField() {
       return getFieldByCoords(this.snake.parts[0].x, this.snake.parts[0].y);
-    },
-    playPauseGame() {
-      this.snake.isRunning = !this.snake.isRunning;
-
-      if (!this.snake.isRunning) {
-        /* stoping the game loop */
-        clearInterval(this.interval);
-      }
-
-      this.startGameLoop();
-    },
-    startGameLoop() {
-      if (!this.snake.isRunning) return false;
-
-      this.interval = setInterval(() => {
-        this.moveSnake();
-      }, this.snake.speed);
     },
     gradeSpeedIfBoundaryAchieved(reachedScore) {
       const { nextBreakpoint } = this.score;
@@ -109,14 +91,13 @@ export default {
         }
       }
 
-      /* restarting game loop */
-      clearInterval(this.interval);
+      this.stopGameLoop();
       this.startGameLoop();
     },
     changeSnakeDirection(newDirection) {
       const currentDirection = this.snake.direction;
 
-      if (!this.snake.isRunning || !this.changingDirectionALlowed) return false;
+      if (!this.isRunning || !this.changingDirectionAllowed) return false;
       if (currentDirection === newDirection) return false;
 
       if (
@@ -129,7 +110,7 @@ export default {
       }
 
       this.snake.direction = newDirection;
-      this.changingDirectionALlowed = false;
+      this.changingDirectionAllowed = false;
     },
     getSnakeCoordsBeforeMoving() {
       const oldPartsCoords = [];
@@ -209,11 +190,14 @@ export default {
     addSnakeBodyPart() {
       const tailIndex = this.snake.parts.length - 1;
       let { x, y } = this.snake.parts[tailIndex];
+
       /*
         determine the coordinates of the new part of the
         body depending on the direction of movement
       */
       switch (this.snake.direction) {
+        /* eslint-disable prefer-destructuring */
+
         case 'up':
           if (this.snake.parts[tailIndex].y === 1) {
             y = this.area.size.y;
@@ -248,6 +232,8 @@ export default {
 
         default:
           break;
+
+        /* eslint-enable prefer-destructuring */
       }
 
       this.snake.parts.push({ x, y });
