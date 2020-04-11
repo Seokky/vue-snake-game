@@ -5,14 +5,16 @@
         .label Score:
         .value {{ score.reached }}
       .col
-        .label {{ (isRunning) ? 'Pause:' : 'Play:' }}
+        .label {{ isRunning ? 'Pause:' : 'Play:' }}
         .value SPACE
       .col
         .label Speed:
-        .value {{ (maxSpeed) ? 'MAX SPEED' : speed }}
+        .value {{ maxSpeed ? 'MAX' : score.speedGradeNumber }}
 </template>
 
 <script>
+import { score } from '@/classes/Score';
+
 export default {
   props: {
     isRunning: {
@@ -23,18 +25,11 @@ export default {
       required: true,
       type: Boolean,
     },
-    speed: {
-      required: true,
-      type: Number,
-    },
-    score: {
-      required: true,
-      type: Object,
-    },
   },
+
   data() {
     return {
-
+      score,
     };
   },
 };

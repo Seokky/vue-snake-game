@@ -6,7 +6,7 @@ class SizeCalculator {
     };
   }
 
-  static fieldSize(clientWidth, clientHeight) {
+  static getRelevantFieldSize(clientWidth, clientHeight) {
     let fieldHeight = 30;
     let fieldWidth = 30;
 
@@ -24,7 +24,7 @@ class SizeCalculator {
   }
 
   static calculateAreaSize(clientWidth, clientHeight) {
-    const fieldSizes = SizeCalculator.fieldSize(clientWidth, clientHeight);
+    const fieldSizes = SizeCalculator.getRelevantFieldSize(clientWidth, clientHeight);
     const x = Math.floor(clientWidth / fieldSizes.pureWidth);
     const y = Math.floor(clientHeight / fieldSizes.pureHeight);
 

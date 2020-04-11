@@ -15,7 +15,7 @@ class DOM {
   }
 
   static fieldIsEmpty(x, y, snakeParts) {
-    for (let i = 0; i < snakeParts.length; i++) {
+    for (let i = 0; i < snakeParts.length; i += 1) {
       if ((snakeParts[i].x === x) && (snakeParts[i].y === y)) {
         return false;
       }
