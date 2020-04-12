@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import DOM from '@/classes/DOM';
+import Randomizer from '@/classes/Randomizer';
 
 class Meat {
   #state = Vue.observable({
@@ -13,10 +14,21 @@ class Meat {
     return this.#state.coords;
   }
 
-  removeMeat() {
-    const meatEl = DOM.getFieldByCoords(this.coordinates.x, this.coordinates.y);
+  create(snakeParts, areaSize) {
+    return new Promise((resolve) => {
+      do {
+        this.coordinates.x = Randomizer.getRandomNumber(1, areaSize.x);
+        this.coordinates.y = Randomizer.getRandomNumber(1, areaSize.y);
+      } while (!DOM.fieldIsEmpty(this.coordinates.x, this.coordinates.y, snakeParts));
 
-    meatEl.classList.remove('meatField');
+      resolve();
+    });
+  }
+
+  remove() {
+    DOM
+      .getFieldByCoords(this.coordinates.x, this.coordinates.y)
+      .classList.remove('meatField');
   }
 }
 

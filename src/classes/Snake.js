@@ -32,6 +32,63 @@ class Snake {
     this.#state.parts[partIndex][axis] = value;
   }
 
+  move(areaSize) {
+    const oldPartsCoords = this.getCoordsBeforeMoving();
+
+    for (let i = 0; i < this.parts.length; i += 1) {
+      /* if it's head, just increment/decrement X or Y depending on moving direction */
+      if (i === 0) {
+        this.getHeadElement().classList.remove('snakeHead');
+
+        switch (this.direction) {
+          case 'up':
+            if (this.parts[0].y === 1) {
+              this.setPartCoordinate(0, 'y', areaSize.y);
+            } else {
+              this.setPartCoordinate(0, 'y', this.parts[0].y - 1);
+            }
+            break;
+
+          case 'down':
+            if (this.parts[0].y === areaSize.y) {
+              this.setPartCoordinate(0, 'y', 1);
+            } else {
+              this.setPartCoordinate(0, 'y', this.parts[0].y + 1);
+            }
+            break;
+
+          case 'left':
+            if (this.parts[0].x === 1) {
+              this.setPartCoordinate(0, 'x', areaSize.x);
+            } else {
+              this.setPartCoordinate(0, 'x', this.parts[0].x - 1);
+            }
+            break;
+
+          case 'right':
+            if (this.parts[0].x === areaSize.x) {
+              this.setPartCoordinate(0, 'x', 1);
+            } else {
+              this.setPartCoordinate(0, 'x', this.parts[0].x + 1);
+            }
+            break;
+
+          default:
+            break;
+        }
+      } else {
+        /*
+          If it's a body part, put it on coords of the part that going ahead of it.
+          Thus, each part of the body is constantly trying to catch up with
+          the part that going ahead,
+        */
+        this.getBodyPartElement(i).classList.remove('snakePart');
+        this.setPartCoordinate(i, 'x', oldPartsCoords[i - 1].x);
+        this.setPartCoordinate(i, 'y', oldPartsCoords[i - 1].y);
+      }
+    }
+  }
+
   addBodyPart(areaWidth, areaHeight) {
     const newBodyPartCoords = {
       x: null,
@@ -45,38 +102,46 @@ class Snake {
     switch (this.direction) {
       case 'up':
         newBodyPartCoords.x = this.parts[lastPartIndex].x;
+
         if (this.parts[lastPartIndex].y === 1) {
           newBodyPartCoords.y = areaHeight;
         } else {
           newBodyPartCoords.y = this.parts[lastPartIndex].y - 1;
         }
+
         break;
 
       case 'down':
         newBodyPartCoords.x = this.parts[lastPartIndex].x;
+
         if (this.parts[lastPartIndex].y === areaHeight) {
           newBodyPartCoords.y = 1;
         } else {
           newBodyPartCoords.y = this.parts[lastPartIndex].y + 1;
         }
+
         break;
 
       case 'left':
+        newBodyPartCoords.y = this.parts[lastPartIndex].y;
+
         if (this.parts[lastPartIndex].x === areaWidth) {
           newBodyPartCoords.x = 1;
         } else {
           newBodyPartCoords.x = this.parts[lastPartIndex].x + 1;
         }
-        newBodyPartCoords.y = this.parts[lastPartIndex].y;
+
         break;
 
       case 'right':
+        newBodyPartCoords.y = this.parts[lastPartIndex].y;
+
         if (this.parts[lastPartIndex].x === 1) {
           newBodyPartCoords.x = areaWidth;
         } else {
           newBodyPartCoords.x = this.parts[lastPartIndex].x - 1;
         }
-        newBodyPartCoords.y = this.parts[lastPartIndex].y;
+
         break;
 
       default:
@@ -115,9 +180,8 @@ class Snake {
   }
 
   onItself() {
-    const headEl = this.getHeadElement();
-
-    return headEl.classList.value.includes('snakePart');
+    return this.getHeadElement()
+      .classList.value.includes('snakePart');
   }
 }
 

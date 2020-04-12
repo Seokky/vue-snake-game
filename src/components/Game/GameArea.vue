@@ -77,11 +77,16 @@ export default {
       this.changingDirectionALlowed = true;
     },
 
-    prepareForGame() {
+    async prepareForGame() {
       this.setAreaElement();
       this.setClientSizes();
       this.setAreaSizes();
+      this.createArea();
+      this.drawSnake();
+      await this.drawMeat();
+    },
 
+    createArea() {
       const fieldSizes = SizeCalculator.getRelevantFieldSize(
         this.clientSizes.width,
         this.clientSizes.height,
@@ -98,9 +103,6 @@ export default {
           this.area.element.appendChild(field);
         }
       }
-
-      this.drawSnake();
-      this.drawNewMeatField();
     },
 
     onKeyDown(event) {
@@ -129,75 +131,6 @@ export default {
       }
     },
 
-    stopTheGame() {
-      this.isRunning = !false;
-      clearInterval(this.interval);
-
-      if (window.confirm('The snake bit itself. Try again?')) {
-        this.$router.back();
-      } else {
-        this.$router.back();
-      }
-    },
-
-    setAreaElement() {
-      this.area.element = DOM.getGameAreaElement();
-    },
-
-    setClientSizes() {
-      this.clientSizes = SizeCalculator.getClientSizes(this.area.element);
-    },
-
-    setAreaSizes() {
-      const areaSize = SizeCalculator.calculateAreaSize(
-        this.clientSizes.width,
-        this.clientSizes.height,
-      );
-      this.area.size.x = areaSize.x;
-      this.area.size.y = areaSize.y;
-    },
-
-    drawNewMeatField() {
-      do {
-        meat.coordinates.x = Randomizer.getRandomNumber(1, this.area.size.x);
-        meat.coordinates.y = Randomizer.getRandomNumber(1, this.area.size.y);
-      } while (!DOM.fieldIsEmpty(meat.coordinates.x, meat.coordinates.y, snake.parts));
-
-      const field = DOM.getFieldByCoords(meat.coordinates.x, meat.coordinates.y);
-      field.classList.add('areaField', 'meatField');
-    },
-
-    isSnakeOnMeat() {
-      const xIsEquals = snake.parts[0].x === meat.coordinates.x;
-      const yIsEquals = snake.parts[0].y === meat.coordinates.y;
-
-      return xIsEquals && yIsEquals;
-    },
-
-    drawSnake() {
-      /* drawing each part of snake */
-      for (let i = 0; i < snake.parts.length; i += 1) {
-        const field = snake.getBodyPartElement(i);
-
-        if (i > 0) {
-          field.classList.add('snakePart');
-        } else {
-          field.classList.add('snakeHead');
-        }
-      }
-
-      if (this.isSnakeOnMeat()) {
-        score.increase();
-        meat.removeMeat();
-        this.drawNewMeatField();
-        snake.addBodyPart(this.area.size.x, this.area.size.y);
-      }
-
-      if (snake.onItself()) {
-        this.stopTheGame();
-      }
-    },
-
     playPauseGame() {
       this.isRunning = !this.isRunning;
 
@@ -217,28 +150,60 @@ export default {
       }, snake.speed);
     },
 
-    gradeSpeedIfBoundaryAchieved(reachedScore) {
-      const { nextBreakpoint } = score;
+    finishTheGame() {
+      this.isRunning = !false;
+      clearInterval(this.interval);
 
-      /* if reached score achieved the boundary of the next breakpoint */
-      if (reachedScore >= score.breakpoints[nextBreakpoint].boundary) {
-        /* if that breakpoint don't passed yet */
-        if (!score.breakpoints[nextBreakpoint].passed) {
-          /* grade speed and turn breakpoint to passed */
-          snake.setSpeed(snake.speed - score.speedGradeValue);
-          score.increaseSpeedGrade();
-          score.breakpoints[nextBreakpoint].passed = true;
+      /* eslint-disable-next-line no-alert */
+      window.confirm('The snake bit itself. Try again?');
+      this.$router.back();
+    },
 
-          /* if it's not last breakpoint */
-          if (nextBreakpoint < (score.breakpoints.length - 1)) {
-            score.increaseNextBreakpoint();
-          }
-        }
+    setAreaElement() {
+      this.area.element = DOM.getGameAreaElement();
+    },
+
+    setClientSizes() {
+      this.clientSizes = SizeCalculator.getClientSizes(this.area.element);
+    },
+
+    setAreaSizes() {
+      const areaSize = SizeCalculator.calculateAreaSize(
+        this.clientSizes.width,
+        this.clientSizes.height,
+      );
+      this.area.size.x = areaSize.x;
+      this.area.size.y = areaSize.y;
+    },
+
+    async drawMeat() {
+      await meat.create(snake.parts, this.area.size);
+
+      DOM
+        .getFieldByCoords(meat.coordinates.x, meat.coordinates.y)
+        .classList.add('areaField', 'meatField');
+    },
+
+    async drawSnake() {
+      /* drawing each part of snake */
+      for (let i = 0; i < snake.parts.length; i += 1) {
+        const className = (i > 0) ? 'snakePart' : 'snakeHead';
+
+        snake
+          .getBodyPartElement(i)
+          .classList.add(className);
       }
 
-      /* restarting game loop */
-      clearInterval(this.interval);
-      this.startGameLoop();
+      if (this.isSnakeOnMeat()) {
+        score.increase();
+        meat.remove();
+        await this.drawMeat();
+        snake.addBodyPart(this.area.size.x, this.area.size.y);
+      }
+
+      if (snake.onItself()) {
+        this.finishTheGame();
+      }
     },
 
     changeSnakeDirection(direction) {
@@ -266,60 +231,39 @@ export default {
     },
 
     moveSnake() {
-      const oldPartsCoords = snake.getCoordsBeforeMoving();
+      snake.move(this.area.size);
+      this.drawSnake();
+    },
 
-      for (let i = 0; i < snake.parts.length; i += 1) {
-        /* if it's head, just increment/decrement X or Y depending on moving direction */
-        if (i === 0) {
-          const oldSnakeHead = snake.getHeadElement();
-          oldSnakeHead.classList.remove('snakeHead');
+    isSnakeOnMeat() {
+      const xIsEquals = snake.parts[0].x === meat.coordinates.x;
+      const yIsEquals = snake.parts[0].y === meat.coordinates.y;
 
-          switch (snake.direction) {
-            case 'up':
-              if (snake.parts[0].y === 1) {
-                snake.setPartCoordinate(0, 'y', this.area.size.y);
-              } else {
-                snake.setPartCoordinate(0, 'y', snake.parts[0].y - 1);
-              }
-              break;
-            case 'down':
-              if (snake.parts[0].y === this.area.size.y) {
-                snake.setPartCoordinate(0, 'y', 1);
-              } else {
-                snake.setPartCoordinate(0, 'y', snake.parts[0].y + 1);
-              }
-              break;
-            case 'left':
-              if (snake.parts[0].x === 1) {
-                snake.setPartCoordinate(0, 'x', this.area.size.x);
-              } else {
-                snake.setPartCoordinate(0, 'x', snake.parts[0].x - 1);
-              }
-              break;
-            case 'right':
-              if (snake.parts[0].x === this.area.size.x) {
-                snake.setPartCoordinate(0, 'x', 1);
-              } else {
-                snake.setPartCoordinate(0, 'x', snake.parts[0].x + 1);
-              }
-              break;
-            default:
-              break;
+      return xIsEquals && yIsEquals;
+    },
+
+    gradeSpeedIfBoundaryAchieved(reachedScore) {
+      const { nextBreakpoint } = score;
+
+      /* if reached score achieved the boundary of the next breakpoint */
+      if (reachedScore >= score.breakpoints[nextBreakpoint].boundary) {
+        /* if that breakpoint don't passed yet */
+        if (!score.breakpoints[nextBreakpoint].passed) {
+          /* grade speed and turn breakpoint to passed */
+          snake.setSpeed(snake.speed - score.speedGradeValue);
+          score.increaseSpeedGrade();
+          score.breakpoints[nextBreakpoint].passed = true;
+
+          /* if it's not last breakpoint */
+          if (nextBreakpoint < (score.breakpoints.length - 1)) {
+            score.increaseNextBreakpoint();
           }
-        } else {
-          /*
-            If it's a body part, put it on coords of the part that going ahead of it.
-            Thus, each part of the body is constantly trying to catch up with
-            the part that going ahead,
-          */
-          const oldPartPos = snake.getBodyPartElement(i);
-          oldPartPos.classList.remove('snakePart');
-          snake.setPartCoordinate(i, 'x', oldPartsCoords[i - 1].x);
-          snake.setPartCoordinate(i, 'y', oldPartsCoords[i - 1].y);
         }
       }
 
-      this.drawSnake();
+      /* restarting game loop */
+      clearInterval(this.interval);
+      this.startGameLoop();
     },
   },
 };
